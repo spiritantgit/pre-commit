@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Define the path to the gitleaks executable
-GITLEAKS_PATH="/home/spiritant/Downloads/gitleakslocal"
+GITLEAKS_PATH="/tmp"
 
 # Check if the pre-commit check is enabled in Git config
 pre_commit_check_enabled=$(git config pre-commit.checkgitleaks)
 
 if [[ "$pre_commit_check_enabled" == "true" ]]; then
     # Check if gitleaks is installed
-    if ! command -v /home/spiritant/Downloads/gitleakslocal/gitleaks &> /dev/null; then
+    if ! command -v /tmp/gitleaks &> /dev/null; then
         echo "gitleaks not found. Installing..."
 
         # Determine the OS of the system
