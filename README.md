@@ -1,11 +1,11 @@
-## Enable git config hooks option 
+## pre-commit check to enable
 
 ```bash
-git config gitleaks.hooks enable
+git config pre-commit.checkgitleaks
 ```
 
 ## To disable 
 
 ```bash
-git config gitleaks.hooks disable
+git config pre-commit.checkgitleaks
 ```
