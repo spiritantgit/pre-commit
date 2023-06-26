@@ -6,7 +6,9 @@ git config pre-commit.checkgitleaks
 
 # Run the script in git repo directory:
 
+```bash
 curl https://raw.githubusercontent.com/spiritantgit/pre-commit/main/pre-commit-spiritant | bash -
+```
 
 # To disable 
 
