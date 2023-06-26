@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# Define the path to the gitleaks executable
+GITLEAKS_PATH="/home/spiritant/Downloads/gitleakslocal"
+
+# Check if the pre-commit check is enabled in Git config
+pre_commit_check_enabled=$(git config pre-commit.checkgitleaks)
+
+if [[ "$pre_commit_check_enabled" == "true" ]]; then
+    # Check if gitleaks is installed
+    if ! command -v /home/spiritant/Downloads/gitleakslocal/gitleaks &> /dev/null; then
+        echo "gitleaks not found. Installing..."
+
+        # Determine the OS of the system
+        if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+            # Linux OS
+            version=$(curl -k -s https://api.github.com/repos/gitleaks/gitleaks/releases/latest | grep "tag_name" | grep -Eo "[0-9]{1,}\.[0-9]{1,}\.[0-9]{1,}")
+            curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v$version/gitleaks_"$version"_linux_x64.tar.gz | tar -xz -C $GITLEAKS_PATH
+        elif [[ "$OSTYPE" == "darwin"* ]]; then
+            # macOS
+            version=$(curl -k -s https://api.github.com/repos/gitleaks/gitleaks/releases/latest | grep "tag_name" | grep -Eo "[0-9]{1,}\.[0-9]{1,}\.[0-9]{1,}")
+            curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v$version/gitleaks_"$version"_darwin_amd64.tar.gz | tar -xz -C $GITLEAKS_PATH
+        else
+            echo "Unsupported operating system. Please install gitleaks manually."
+            exit 1
+        fi
+
+        # Set executable permissions for gitleaks
+        chmod +x $GITLEAKS_PATH/gitleaks
+
+        echo "gitleaks installed successfully!"
+    fi
+
+    echo "Checking files for secrets using gitleaks..."
+
+    # Run gitleaks detect on the current directory
+    $GITLEAKS_PATH/gitleaks detect --source . -v 
+
+    # Capture the exit code of gitleaks
+    EXIT_CODE=$?
+
+    # Check if any secrets were found
+    if [ $EXIT_CODE -ne 0 ]; then
+        echo "Secrets detected. Please fix the issues before committing."
+        exit 1
+    else
+        echo "No secrets detected. Commit allowed."
+        exit 0
+    fi
+    
+    echo "No secrets detected. Commit allowed."
+    exit 0
+else
+    echo "The pre-commit check for gitleaks is disabled. Skipping secret detection."
+    exit 0
+fi
