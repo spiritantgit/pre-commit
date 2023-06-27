@@ -1,7 +1,7 @@
 # To enable pre-commit check 
 
 ```bash
-git config pre-commit.checkgitleaks
+git config pre-commit.checkgitleaks true
 ```
 
 # Run the script in git repo directory:
@@ -13,5 +13,5 @@ curl https://raw.githubusercontent.com/spiritantgit/pre-commit/main/pre-commit-s
 # To disable 
 
 ```bash
-git config pre-commit.checkgitleaks
+git config pre-commit.checkgitleaks false
 ```
